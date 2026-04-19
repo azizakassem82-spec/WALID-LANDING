@@ -7,6 +7,10 @@ export const getSettings = query({
         const settings = await ctx.db.query("settings").first();
         if (settings) {
             const { adminPassword, ...rest } = settings;
+            // Force the core price to 4900 if it's the old 3200 default
+            if (rest.unitPrice === 3200) {
+                rest.unitPrice = 4900;
+            }
             return rest;
         }
         // Return default settings if not yet defined
