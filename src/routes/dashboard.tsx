@@ -138,16 +138,27 @@ function doGet(e) {
   return ContentService.createTextOutput("ok");
 }`;
 
-// ---------- Login ----------
 function LoginScreen({ onLogin }: { onLogin: () => void }) {
+  const checkPassword = useMutation(api.settings.checkPassword);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    if (password === "NACERADMIN") {
-      onLogin();
-    } else {
-      setError("كلمة المرور غير صحيحة");
+  const handleLogin = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const ok = await checkPassword({ password });
+      if (ok) {
+        onLogin();
+      } else {
+        setError("كلمة المرور غير صحيحة");
+      }
+    } catch (err) {
+      setError("حدث خطأ ما، يرجى المحاولة لاحقاً");
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -179,10 +190,11 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
             />
             <button
               onClick={handleLogin}
-              className="w-full rounded-xl py-3 text-sm font-bold text-white transition-all hover:scale-[1.02] active:scale-[0.98]"
+              disabled={loading}
+              className="w-full rounded-xl py-3 text-sm font-bold text-white transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
               style={{ background: "var(--gradient-cta)" }}
             >
-              تسجيل الدخول
+              {loading ? "جاري التحقق..." : "تسجيل الدخول"}
             </button>
           </div>
         </div>
@@ -194,10 +206,13 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
 // ---------- Settings Tab ----------
 function SettingsTab() {
   const { settings, update, reset } = useSettings();
+  const updateAdminPassword = useMutation(api.settings.updateAdminPassword);
   const [saved, setSaved] = useState(false);
   const [draft, setDraft] = useState({ ...settings });
   const [showScript, setShowScript] = useState(false);
   const [showLeadsScript, setShowLeadsScript] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [passwordUpdating, setPasswordUpdating] = useState(false);
 
   const handleSave = () => {
     update(draft);
@@ -205,9 +220,27 @@ function SettingsTab() {
     setTimeout(() => setSaved(false), 2000);
   };
 
+  const handleUpdatePassword = async () => {
+    if (!newPassword || newPassword.length < 6) {
+      alert("كلمة المرور يجب أن تكون 6 أحرف على الأقل");
+      return;
+    }
+    setPasswordUpdating(true);
+    try {
+      await updateAdminPassword({ password: newPassword });
+      setNewPassword("");
+      alert("تم تحديث كلمة المرور بنجاح");
+    } catch (err) {
+      alert("حدث خطأ أثناء تحديث كلمة المرور");
+      console.error(err);
+    } finally {
+      setPasswordUpdating(false);
+    }
+  };
+
   const handleReset = () => {
     reset();
-    setDraft({ unitPrice: 3200, oldUnitPrice: 3900, googleSheetUrl: "", googleSheetNotEndedUrl: "", bannerEnabled: true, bannerMessage: "التوصيل متوفر إلى", facebookPixelId: "", facebookAccessToken: "", tiktokPixelId: "", deliveryPrices: {} });
+    setDraft({ unitPrice: 4900, oldUnitPrice: 3900, googleSheetUrl: "", googleSheetNotEndedUrl: "", bannerEnabled: true, bannerMessage: "التوصيل متوفر إلى", facebookPixelId: "", facebookAccessToken: "", tiktokPixelId: "", deliveryPrices: {} });
   };
 
   return (
@@ -513,6 +546,36 @@ function SettingsTab() {
         <div className="mt-3 flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-xs text-blue-700 font-semibold">
           <Info className="h-4 w-4" />
           تلميح: اترك خانة المكتب فارغة تماماً إذا كان التوصيل للمنزل فقط (لا يوجد stopdesk).
+        </div>
+      </div>
+
+      {/* Admin Password */}
+      <div className="rounded-2xl border bg-card p-6 shadow-sm border-red-100">
+        <h3 className="font-extrabold text-base mb-4 flex items-center gap-2">
+          <Settings className="h-5 w-5 text-red-500" />
+          تغيير كلمة مرور المدير
+        </h3>
+        <div className="space-y-3">
+          <div className="space-y-1.5">
+            <label className="text-sm font-semibold">كلمة المرور الجديدة</label>
+            <div className="flex gap-2">
+              <input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="أدخل كلمة المرور الجديدة"
+                className="flex-1 rounded-xl border bg-background px-4 py-2.5 text-right text-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+              />
+              <button
+                onClick={handleUpdatePassword}
+                disabled={passwordUpdating}
+                className="rounded-xl px-4 py-2.5 text-sm font-bold text-white bg-red-500 hover:bg-red-600 transition-all disabled:opacity-50"
+              >
+                {passwordUpdating ? "جاري التحديث..." : "تحديث"}
+              </button>
+            </div>
+            <p className="text-[10px] text-muted-foreground">كلمة المرور الافتراضية هي: NACERADMIN</p>
+          </div>
         </div>
       </div>
 

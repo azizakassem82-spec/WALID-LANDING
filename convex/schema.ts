@@ -28,6 +28,7 @@ export default defineSchema({
     facebookPixelId: v.string(),
     facebookAccessToken: v.string(),
     tiktokPixelId: v.string(),
+    adminPassword: v.optional(v.string()),
     deliveryPrices: v.record(
       v.string(),
       v.object({

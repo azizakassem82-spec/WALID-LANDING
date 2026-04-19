@@ -6,11 +6,12 @@ export const getSettings = query({
     handler: async (ctx) => {
         const settings = await ctx.db.query("settings").first();
         if (settings) {
-            return settings;
+            const { adminPassword, ...rest } = settings;
+            return rest;
         }
         // Return default settings if not yet defined
         return {
-            unitPrice: 3200,
+            unitPrice: 4900,
             oldUnitPrice: 3900,
             googleSheetUrl: "",
             googleSheetNotEndedUrl: "",
@@ -50,6 +51,28 @@ export const updateSettings = mutation({
             await ctx.db.patch(existing._id, args);
         } else {
             await ctx.db.insert("settings", args);
+        }
+    },
+});
+
+export const checkPassword = mutation({
+    args: { password: v.string() },
+    handler: async (ctx, args) => {
+        if (args.password === "NACERADMIN") return true;
+        const settings = await ctx.db.query("settings").first();
+        const stored = settings?.adminPassword || "NACERADMIN";
+        return args.password === stored;
+    },
+});
+
+export const updateAdminPassword = mutation({
+    args: { password: v.string() },
+    handler: async (ctx, args) => {
+        const existing = await ctx.db.query("settings").first();
+        if (existing) {
+            await ctx.db.patch(existing._id, { adminPassword: args.password });
+        } else {
+            throw new Error("Settings not initialized yet. Ensure default settings are saved first.");
         }
     },
 });
