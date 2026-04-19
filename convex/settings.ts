@@ -76,7 +76,19 @@ export const updateAdminPassword = mutation({
         if (existing) {
             await ctx.db.patch(existing._id, { adminPassword: args.password });
         } else {
-            throw new Error("Settings not initialized yet. Ensure default settings are saved first.");
+            await ctx.db.insert("settings", {
+                unitPrice: 4900,
+                oldUnitPrice: 3900,
+                googleSheetUrl: "",
+                googleSheetNotEndedUrl: "",
+                bannerEnabled: true,
+                bannerMessage: "التوصيل متوفر إلى",
+                facebookPixelId: "",
+                facebookAccessToken: "",
+                tiktokPixelId: "",
+                adminPassword: args.password,
+                deliveryPrices: {},
+            });
         }
     },
 });
