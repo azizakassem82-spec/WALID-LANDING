@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ShoppingBag,
   TrendingUp,
@@ -205,19 +205,28 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
 
 // ---------- Settings Tab ----------
 function SettingsTab() {
-  const { settings, update, reset } = useSettings();
+  const { settings, update, reset, isLoading } = useSettings();
   const updateAdminPassword = useMutation(api.settings.updateAdminPassword);
   const [saved, setSaved] = useState(false);
-  const [draft, setDraft] = useState({ ...settings });
+  // ✅ FIX: initialize draft as null; sync from server when Convex loads
+  const [draft, setDraft] = useState<typeof settings | null>(null);
   const [showScript, setShowScript] = useState(false);
   const [showLeadsScript, setShowLeadsScript] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [passwordUpdating, setPasswordUpdating] = useState(false);
 
+  // Sync draft from server settings once Convex data arrives (first load only)
+  useEffect(() => {
+    if (!isLoading && draft === null) {
+      setDraft({ ...settings });
+    }
+  }, [isLoading, settings]);
+
   const handleSave = () => {
+    if (!draft) return;
     update(draft);
     setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    setTimeout(() => setSaved(false), 2500);
   };
 
   const handleUpdatePassword = async () => {
@@ -239,9 +248,20 @@ function SettingsTab() {
   };
 
   const handleReset = () => {
+    const defaults = { unitPrice: 4900, oldUnitPrice: 3900, googleSheetUrl: "", googleSheetNotEndedUrl: "", bannerEnabled: true, bannerMessage: "التوصيل متوفر إلى", facebookPixelId: "", facebookAccessToken: "", tiktokPixelId: "", deliveryPrices: {} as Record<string, { stop: number | null; dom: number; note?: string }> };
     reset();
-    setDraft({ unitPrice: 4900, oldUnitPrice: 3900, googleSheetUrl: "", googleSheetNotEndedUrl: "", bannerEnabled: true, bannerMessage: "التوصيل متوفر إلى", facebookPixelId: "", facebookAccessToken: "", tiktokPixelId: "", deliveryPrices: {} });
+    setDraft(defaults);
   };
+
+  // Show loading spinner until Convex settings arrive
+  if (isLoading || draft === null) {
+    return (
+      <div className="flex items-center justify-center py-24 text-muted-foreground">
+        <RefreshCw className="h-6 w-6 animate-spin mr-2" />
+        <span className="text-sm font-semibold">جاري تحميل الإعدادات...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
