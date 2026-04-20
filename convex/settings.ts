@@ -26,7 +26,7 @@ export const getSettings = query({
             facebookAccessToken: "",
             tiktokPixelId: "",
             tiktokPixelIds: [] as string[],
-            deliveryPrices: {},
+            deliveryPrices: [],
         };
     },
 });
@@ -44,9 +44,9 @@ export const updateSettings = mutation({
         facebookAccessToken: v.string(),
         tiktokPixelId: v.string(),
         tiktokPixelIds: v.optional(v.array(v.string())),
-        deliveryPrices: v.record(
-            v.string(),
+        deliveryPrices: v.array(
             v.object({
+                wilaya: v.string(),
                 stop: v.union(v.number(), v.null()),
                 dom: v.number(),
                 note: v.optional(v.string()),
@@ -91,7 +91,7 @@ export const updateAdminPassword = mutation({
                 facebookAccessToken: "",
                 tiktokPixelId: "",
                 adminPassword: args.password,
-                deliveryPrices: {},
+                deliveryPrices: [],
             });
         }
     },

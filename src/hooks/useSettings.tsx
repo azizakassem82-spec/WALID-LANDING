@@ -43,14 +43,25 @@ const SettingsContext = createContext<SettingsContextValue | null>(null);
 
 /** Normalizes server response: coerces optional fields and ensures robust types */
 function normalizeSettings(raw: Record<string, unknown>): AppSettings {
+  // Convert Array from server to Record for frontend
+  const serverPrices = Array.isArray(raw.deliveryPrices) ? raw.deliveryPrices : [];
+  const pricesMap: AppSettings["deliveryPrices"] = {};
+  serverPrices.forEach((p: any) => {
+    if (p && p.wilaya) {
+      pricesMap[p.wilaya] = {
+        stop: p.stop,
+        dom: p.dom,
+        note: p.note
+      };
+    }
+  });
+
   const norm = {
     ...DEFAULTS,
     ...(raw as Partial<AppSettings>),
     facebookPixelIds: Array.isArray(raw.facebookPixelIds) ? raw.facebookPixelIds as string[] : [],
     tiktokPixelIds: Array.isArray(raw.tiktokPixelIds) ? raw.tiktokPixelIds as string[] : [],
-    deliveryPrices: (raw.deliveryPrices && typeof raw.deliveryPrices === "object") 
-      ? (raw.deliveryPrices as AppSettings["deliveryPrices"]) 
-      : {},
+    deliveryPrices: pricesMap,
   };
   return norm;
 }
@@ -71,21 +82,22 @@ export function SettingsProvider({ children }: { children: ReactNode }): React.R
     const base = localOptimistic || (serverSettings ? normalizeSettings(serverSettings as Record<string, unknown>) : DEFAULTS);
     const next: AppSettings = { ...base, ...patch };
     
-    // 1. Sanitize Numeric Fields (ensure no NaN, no Infinite)
     const safeNum = (v: any, fallback: number) => (typeof v === "number" && isFinite(v)) ? v : fallback;
-    
-    const cleanDeliveryPrices: AppSettings["deliveryPrices"] = {};
+
+    // Convert Record from frontend back to Array for Convex
+    const deliveryPricesArray: any[] = [];
     Object.entries(next.deliveryPrices || {}).forEach(([w, p]) => {
       if (p && typeof p === "object") {
-        cleanDeliveryPrices[w] = {
+        deliveryPricesArray.push({
+          wilaya: w,
           stop: (p.stop === null || (typeof p.stop === "number" && isFinite(p.stop))) ? p.stop : null,
           dom: safeNum(p.dom, 0),
           note: p.note
-        };
+        });
       }
     });
 
-    const pureSettings = {
+    const pureSettings: any = {
       unitPrice: safeNum(next.unitPrice, 4900),
       oldUnitPrice: safeNum(next.oldUnitPrice, 3900),
       googleSheetUrl: next.googleSheetUrl || "",
@@ -97,7 +109,7 @@ export function SettingsProvider({ children }: { children: ReactNode }): React.R
       facebookAccessToken: next.facebookAccessToken || "",
       tiktokPixelId: next.tiktokPixelId || "",
       tiktokPixelIds: Array.isArray(next.tiktokPixelIds) ? next.tiktokPixelIds.filter(Boolean) : [],
-      deliveryPrices: cleanDeliveryPrices
+      deliveryPrices: deliveryPricesArray
     };
 
     setLocalOptimistic(next);

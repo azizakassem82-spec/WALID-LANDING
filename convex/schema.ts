@@ -31,9 +31,9 @@ export default defineSchema({
     tiktokPixelId: v.string(),
     tiktokPixelIds: v.optional(v.array(v.string())),
     adminPassword: v.optional(v.string()),
-    deliveryPrices: v.record(
-      v.string(),
+    deliveryPrices: v.array(
       v.object({
+        wilaya: v.string(),
         stop: v.union(v.number(), v.null()),
         dom: v.number(),
         note: v.optional(v.string()),
