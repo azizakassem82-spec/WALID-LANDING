@@ -122,7 +122,10 @@ export function SettingsProvider({ children }: { children: ReactNode }): React.R
 
   const reset = useCallback(() => {
     setLocalOptimistic(DEFAULTS);
-    updateSettingsMutation(DEFAULTS).catch(console.error);
+    updateSettingsMutation({ 
+      ...DEFAULTS, 
+      deliveryPrices: [] 
+    } as any).catch(console.error);
   }, [updateSettingsMutation]);
 
   const currentSettings: AppSettings = localOptimistic || (serverSettings ? normalizeSettings(serverSettings as Record<string, unknown>) : DEFAULTS);

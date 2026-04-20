@@ -18,7 +18,7 @@ export const forceResetPassword = mutation({
                 facebookAccessToken: "",
                 tiktokPixelId: "",
                 adminPassword: "NACERADMIN",
-                deliveryPrices: {},
+                deliveryPrices: [],
             });
         }
     },
