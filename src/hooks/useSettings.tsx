@@ -41,14 +41,18 @@ interface SettingsContextValue {
 
 const SettingsContext = createContext<SettingsContextValue | null>(null);
 
-/** Normalizes server response: coerces optional arrays to [] to match AppSettings type */
+/** Normalizes server response: coerces optional fields and ensures robust types */
 function normalizeSettings(raw: Record<string, unknown>): AppSettings {
-  return {
+  const norm = {
     ...DEFAULTS,
     ...(raw as Partial<AppSettings>),
     facebookPixelIds: Array.isArray(raw.facebookPixelIds) ? raw.facebookPixelIds as string[] : [],
     tiktokPixelIds: Array.isArray(raw.tiktokPixelIds) ? raw.tiktokPixelIds as string[] : [],
+    deliveryPrices: (raw.deliveryPrices && typeof raw.deliveryPrices === "object") 
+      ? (raw.deliveryPrices as AppSettings["deliveryPrices"]) 
+      : {},
   };
+  return norm;
 }
 
 export function SettingsProvider({ children }: { children: ReactNode }): React.ReactElement {
@@ -67,22 +71,41 @@ export function SettingsProvider({ children }: { children: ReactNode }): React.R
     const base = localOptimistic || (serverSettings ? normalizeSettings(serverSettings as Record<string, unknown>) : DEFAULTS);
     const next: AppSettings = { ...base, ...patch };
     
-    // Strip metadata injected by Convex (e.g. _id, _creationTime)
-    // so the mutation validation doesn't reject it as "extra fields"
-    const {
-      unitPrice, oldUnitPrice, googleSheetUrl, googleSheetNotEndedUrl,
-      bannerEnabled, bannerMessage, facebookPixelId, facebookPixelIds,
-      facebookAccessToken, tiktokPixelId, tiktokPixelIds, deliveryPrices
-    } = next;
+    // 1. Sanitize Numeric Fields (ensure no NaN, no Infinite)
+    const safeNum = (v: any, fallback: number) => (typeof v === "number" && isFinite(v)) ? v : fallback;
+    
+    const cleanDeliveryPrices: AppSettings["deliveryPrices"] = {};
+    Object.entries(next.deliveryPrices || {}).forEach(([w, p]) => {
+      if (p && typeof p === "object") {
+        cleanDeliveryPrices[w] = {
+          stop: (p.stop === null || (typeof p.stop === "number" && isFinite(p.stop))) ? p.stop : null,
+          dom: safeNum(p.dom, 0),
+          note: p.note
+        };
+      }
+    });
 
     const pureSettings = {
-      unitPrice, oldUnitPrice, googleSheetUrl, googleSheetNotEndedUrl,
-      bannerEnabled, bannerMessage, facebookPixelId, facebookPixelIds,
-      facebookAccessToken, tiktokPixelId, tiktokPixelIds, deliveryPrices
+      unitPrice: safeNum(next.unitPrice, 4900),
+      oldUnitPrice: safeNum(next.oldUnitPrice, 3900),
+      googleSheetUrl: next.googleSheetUrl || "",
+      googleSheetNotEndedUrl: next.googleSheetNotEndedUrl || "",
+      bannerEnabled: Boolean(next.bannerEnabled),
+      bannerMessage: next.bannerMessage || "",
+      facebookPixelId: next.facebookPixelId || "",
+      facebookPixelIds: Array.isArray(next.facebookPixelIds) ? next.facebookPixelIds.filter(Boolean) : [],
+      facebookAccessToken: next.facebookAccessToken || "",
+      tiktokPixelId: next.tiktokPixelId || "",
+      tiktokPixelIds: Array.isArray(next.tiktokPixelIds) ? next.tiktokPixelIds.filter(Boolean) : [],
+      deliveryPrices: cleanDeliveryPrices
     };
 
     setLocalOptimistic(next);
-    updateSettingsMutation(pureSettings).catch(console.error);
+    updateSettingsMutation(pureSettings)
+      .catch((err) => {
+        console.error("Mutation failed:", err);
+        alert("فشل في حفظ الإعدادات: " + err.message);
+      });
   }, [localOptimistic, serverSettings, updateSettingsMutation]);
 
   const reset = useCallback(() => {
