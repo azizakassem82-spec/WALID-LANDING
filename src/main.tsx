@@ -8,11 +8,12 @@ import "./styles.css";
 
 const router = createRouter({ routeTree });
 
-// Inject Convex URL: Force sleek-cardinal-373 in production, use local env in dev
+// Inject Convex URL: Force uncommon-yak-920 to ensure it uses the user's main backend
 const convexUrl = import.meta.env.DEV 
   ? (import.meta.env.VITE_CONVEX_URL || "https://uncommon-yak-920.eu-west-1.convex.cloud")
-  : "https://sleek-cardinal-373.eu-west-1.convex.cloud";
+  : "https://uncommon-yak-920.eu-west-1.convex.cloud";
 const convex = new ConvexReactClient(convexUrl);
+
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
