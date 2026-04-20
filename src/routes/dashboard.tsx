@@ -616,14 +616,14 @@ function SettingsTab() {
                     type="number"
                     value={val.stop === null ? "" : val.stop}
                     onChange={(e) => {
-                      const num = e.target.value ? Number(e.target.value) : null;
-                      setDraft({
-                        ...draft,
-                        deliveryPrices: {
-                          ...draft.deliveryPrices,
-                          [w]: { ...val, stop: num, dom: val.dom || 0 }
-                        }
-                      });
+                      const num = e.target.value !== "" ? Number(e.target.value) : null;
+                      const nextPrices = { ...draft.deliveryPrices };
+                      if (num === null && (val.dom === null || val.dom === 0)) {
+                        delete nextPrices[w];
+                      } else {
+                        nextPrices[w] = { ...val, stop: num, dom: val.dom ?? 0 };
+                      }
+                      setDraft({ ...draft, deliveryPrices: nextPrices });
                     }}
                     placeholder="افتراضي"
                     className="w-full rounded-lg border bg-background px-3 py-1.5 text-center text-xs focus:ring-2 focus:ring-primary focus:outline-none"
@@ -634,14 +634,14 @@ function SettingsTab() {
                     type="number"
                     value={val.dom === null ? "" : val.dom}
                     onChange={(e) => {
-                      const num = e.target.value ? Number(e.target.value) : null;
-                      setDraft({
-                        ...draft,
-                        deliveryPrices: {
-                          ...draft.deliveryPrices,
-                          [w]: { ...val, stop: val.stop, dom: num || 0 }
-                        }
-                      });
+                      const num = e.target.value !== "" ? Number(e.target.value) : null;
+                      const nextPrices = { ...draft.deliveryPrices };
+                      if (num === null && val.stop === null) {
+                        delete nextPrices[w];
+                      } else {
+                        nextPrices[w] = { ...val, stop: val.stop ?? null, dom: num ?? 0 };
+                      }
+                      setDraft({ ...draft, deliveryPrices: nextPrices });
                     }}
                     placeholder="افتراضي"
                     className="w-full rounded-lg border bg-background px-3 py-1.5 text-center text-xs focus:ring-2 focus:ring-primary focus:outline-none"
