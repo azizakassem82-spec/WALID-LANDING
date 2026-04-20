@@ -43,7 +43,7 @@ const SettingsContext = createContext<SettingsContextValue | null>(null);
 
 /** Normalizes server response: coerces optional fields and ensures robust types */
 function normalizeSettings(raw: Record<string, unknown>): AppSettings {
-  // Convert Array from server to Record for frontend
+  console.log("Normalizing settings from server:", raw.deliveryPrices);
   const serverPrices = Array.isArray(raw.deliveryPrices) ? raw.deliveryPrices : [];
   const pricesMap: AppSettings["deliveryPrices"] = {};
   serverPrices.forEach((p: any) => {
@@ -55,6 +55,7 @@ function normalizeSettings(raw: Record<string, unknown>): AppSettings {
       };
     }
   });
+  console.log("Mapped prices to Record:", pricesMap);
 
   const norm = {
     ...DEFAULTS,
@@ -96,7 +97,7 @@ export function SettingsProvider({ children }: { children: ReactNode }): React.R
         });
       }
     });
-
+    console.log("Sending deliveryPricesArray to server:", deliveryPricesArray);
     const pureSettings: any = {
       unitPrice: safeNum(next.unitPrice, 4900),
       oldUnitPrice: safeNum(next.oldUnitPrice, 3900),
