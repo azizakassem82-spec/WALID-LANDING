@@ -24,7 +24,7 @@ const DEFAULTS: AppSettings = {
   googleSheetNotEndedUrl: "",
   bannerEnabled: true,
   bannerMessage: "التوصيل متوفر إلى",
-  facebookPixelId: "",
+  facebookPixelId: "1612297379997971",
   facebookPixelIds: [],
   facebookAccessToken: "",
   tiktokPixelId: "",

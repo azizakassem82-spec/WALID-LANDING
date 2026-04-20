@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from "react";
-import { useMutation } from "convex/react";
+import { useMutation, useAction } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -156,6 +156,7 @@ export function OrderForm() {
   // Convex mutations
   const convexCreateOrder = useMutation(api.orders.createOrder);
   const convexCreateLead = useMutation(api.orders.createNotEndedLead);
+  const sendMetaEvent = useAction(api.actions.sendMetaEvent);
 
   // Time-gate: track when user first interacted with the form
   const formFocusedAt = useRef<number | null>(null);
@@ -246,9 +247,28 @@ export function OrderForm() {
     setSubmitted(true);
     toast.success("تم استلام طلبك بنجاح، سنتصل بك قريباً ✅");
 
-    // Pixel events — in-memory, instant
-    fbEvent("Purchase", { value: unit * qty, currency: "DZD", content_name: "Rova Oil" });
+    // Pixel events — with deduplication event_id
+    const purchaseEventId = `pur_${Date.now()}_${phone}`;
+    fbEvent("Purchase", { 
+      value: unit * qty, 
+      currency: "DZD", 
+      content_name: "Rova Oil",
+      event_id: purchaseEventId 
+    });
     ttEvent("CompletePayment", { value: unit * qty, currency: "DZD" });
+
+    // ── Backend Meta CAPI — Deduplicated with browser pixel ───────────────────
+    sendMetaEvent({
+      eventName: "Purchase",
+      eventId: purchaseEventId,
+      data: {
+        name,
+        phone,
+        wilaya,
+        total: totalAmount,
+        currency: "DZD",
+      }
+    }).catch(console.error);
 
     // ── Fire network sends IN THE BACKGROUND — customer never waits ───────────
     const formattedAddress = address ? `${address} (${deliveryType === "desk" ? "توصيل للمكتب" : "توصيل للمنزل"})` : (deliveryType === "desk" ? "توصيل للمكتب" : "توصيل للمنزل");
@@ -333,8 +353,21 @@ export function OrderForm() {
                 // Pixel event
                 if (!checkoutFired) {
                   setCheckoutFired(true);
-                  fbEvent("InitiateCheckout", { content_name: "Rova Oil" });
+                  const checkoutEventId = `ic_${Date.now()}`;
+                  fbEvent("InitiateCheckout", { 
+                    content_name: "Rova Oil",
+                    event_id: checkoutEventId
+                  });
                   ttEvent("InitiateCheckout", { content_name: "Rova Oil" });
+                  
+                  // Backend CAPI for InitiateCheckout
+                  sendMetaEvent({
+                    eventName: "InitiateCheckout",
+                    eventId: checkoutEventId,
+                    data: {
+                      currency: "DZD",
+                    }
+                  }).catch(console.error);
                 }
               }}
             >

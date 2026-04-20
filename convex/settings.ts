@@ -21,7 +21,7 @@ export const getSettings = query({
             googleSheetNotEndedUrl: "",
             bannerEnabled: true,
             bannerMessage: "التوصيل متوفر إلى",
-            facebookPixelId: "",
+            facebookPixelId: "1612297379997971",
             facebookPixelIds: [] as string[],
             facebookAccessToken: "",
             tiktokPixelId: "",

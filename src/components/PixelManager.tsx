@@ -101,7 +101,13 @@ function loadTtSdk() {
 /** Call from anywhere to fire a Facebook Pixel event on ALL loaded pixels */
 export function fbEvent(event: string, data?: Record<string, unknown>) {
   if (typeof window !== "undefined" && window.fbq) {
-    window.fbq("track", event, data);
+    // If data contains event_id, pass it as the third argument for deduplication
+    if (data?.event_id) {
+       const { event_id, ...rest } = data;
+       window.fbq("track", event, rest, { event_id });
+    } else {
+       window.fbq("track", event, data);
+    }
   }
 }
 
