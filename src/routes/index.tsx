@@ -23,33 +23,12 @@ function Index() {
     <div className="min-h-screen bg-background pb-20 md:pb-0 overflow-x-hidden">
       <PixelManager />
       <Header />
-      <InfiniteBanner />
       <main>
         <Hero />
-        
-        <section className="py-2">
-          <div className="mx-auto max-w-5xl px-4">
-            <img 
-              src="/AFTER HOME PAGE.jpg" 
-              alt="معلومات إضافية" 
-              className="w-full h-auto rounded-[1.5rem] shadow-lg border border-white/20" 
-              loading="lazy" 
-            />
-          </div>
-        </section>
-
         <OrderForm />
-        <TrustBadges />
-        <Reviews />
-        <BeforeAfter />
-
-
-        <Description />
         <FeatureCards />
-        <FAQ />
       </main>
       <Footer />
-      <StickyCTA />
       <Toaster position="top-center" richColors />
     </div>
   );

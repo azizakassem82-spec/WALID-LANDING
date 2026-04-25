@@ -14,11 +14,11 @@ export function Header() {
           <div
             className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-lg transition-transform group-hover:scale-105 overflow-hidden"
           >
-            <img src="/LOGO .webp" alt="Rova Logo" className="h-full w-full object-cover" />
+            <img src="/LOGO.jpg" alt="Rova Logo" className="h-full w-full object-cover" />
           </div>
           <div className="flex flex-col leading-tight">
-            <span className="text-base font-extrabold tracking-tight">Rova</span>
-            <span className="text-[10px] font-medium text-muted-foreground">زيت بديل الليزر</span>
+            <span className="text-base font-extrabold tracking-tight">Bae Chic Collection</span>
+            <span className="text-[10px] font-medium text-muted-foreground">أزياء راقية وعصرية</span>
           </div>
         </a>
         <nav className="hidden items-center gap-7 text-sm font-semibold md:flex">

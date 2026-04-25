@@ -5,8 +5,8 @@ export function FeatureCards() {
   const items = [
     {
       icon: Users,
-      title: "أكثر من 2000 زبون راضي",
-      desc: "آلاف العملاء جربوا Rova و حصلوا على بشرة نقية.",
+      title: "أكثر من 2000 زبونة راضية",
+      desc: "آلاف العميلات جربن أزياء Bae Chic Collection وتألقن بها.",
     },
     {
       icon: Wallet,
@@ -23,8 +23,8 @@ export function FeatureCards() {
     <section id="features" className="py-16">
       <div className="mx-auto max-w-5xl px-4">
         <div className="mb-10 text-center">
-          <h2 className="text-3xl font-extrabold sm:text-4xl">لماذا Rova؟</h2>
-          <p className="mt-2 text-muted-foreground">ثقة آلاف العملاء في الجزائر</p>
+          <h2 className="text-3xl font-extrabold sm:text-4xl">لماذا Bae Chic Collection؟</h2>
+          <p className="mt-2 text-muted-foreground">ثقة آلاف العميلات في الجزائر</p>
         </div>
         <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
           {items.map(({ icon: Icon, title, desc }) => (

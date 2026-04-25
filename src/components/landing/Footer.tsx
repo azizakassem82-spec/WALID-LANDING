@@ -29,12 +29,12 @@ export function Footer() {
               <div
                 className="flex h-10 w-10 overflow-hidden items-center justify-center rounded-xl bg-white text-primary-foreground"
               >
-                <img src="/LOGO .webp" alt="Rova Logo" className="h-full w-full object-cover" />
+                <img src="/LOGO.jpg" alt="Rova Logo" className="h-full w-full object-cover" />
               </div>
-              <span className="text-lg font-extrabold text-white">Rova</span>
+              <span className="text-lg font-extrabold text-white">Bae Chic Collection</span>
             </div>
             <p className="text-sm leading-relaxed text-white/70">
-              منتجات العناية الطبيعية الأصلية، توصيل لكل ولايات الجزائر مع الدفع عند الاستلام.
+              أحدث تشكيلة من الأزياء الراقية، توصيل لكل ولايات الجزائر مع الدفع عند الاستلام.
             </p>
           </div>
 
@@ -71,7 +71,7 @@ export function Footer() {
 
         <div className="mt-10 border-t border-white/10 pt-6 text-center">
           <p className="text-xs text-white/60">
-            Copyright © 2025 Rova. جميع الحقوق محفوظة.
+            Copyright © 2025 Bae Chic Collection. جميع الحقوق محفوظة.
           </p>
         </div>
       </div>

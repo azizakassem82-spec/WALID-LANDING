@@ -2,11 +2,9 @@ import { Leaf, Droplets, Sparkles, Zap } from "lucide-react";
 
 
 const INGREDIENTS = [
-  { icon: Droplets, name: "زيت السعد", desc: "يضعف بصيلات الشعر ويقلل من نموه تدريجياً" },
-  { icon: Leaf, name: "الترمس المر", desc: "يبطئ نمو الشعر الزائد بشكل ملحوظ" },
-  { icon: Droplets, name: "زيت اللوز", desc: "يرطب ويغذي البشرة بعمق بعد إزالة الشعر" },
-  { icon: Leaf, name: "زيت شجرة الشاي", desc: "يهدئ البشرة ويمنع التهاب المسام والتهيّج" },
-  { icon: Sparkles, name: "فيتامين E", desc: "يغذي البشرة ويحافظ على مرونتها وحيويتها" },
+  { icon: Sparkles, name: "تصميم أنيق", desc: "أزياء عصرية بلمسات تقليدية ساحرة" },
+  { icon: Leaf, name: "جودة عالية", desc: "أقمشة فاخرة مختارة بعناية لتناسب كل الأذواق" },
+  { icon: Droplets, name: "تفاصيل متقنة", desc: "تطريز دقيق وحرفية عالية في كل قطعة" },
 ];
 
 export function Description() {
@@ -33,18 +31,14 @@ export function Description() {
         {/* Main description */}
         <div className="mx-auto max-w-3xl space-y-4 text-base leading-loose text-foreground/90">
           <p>
-            <strong className="text-primary">Rova</strong> تركيبة فعّالة تجمع بين زيت السعد،
-            الترمس المر، زيت اللوز، وزيت شجرة الشاي، مدعّمة بفيتامين E لتمنحك حلاً طبيعياً
-            ومتكاملاً للعناية بالبشرة بعد إزالة الشعر.
+            <strong className="text-primary">Bae Chic Collection</strong> تقدم لكم أرقى التصاميم للأزياء التقليدية والعصرية.
+            مجموعتنا متميزة بألوانها الزاهية وتفاصيلها الدقيقة لتجعلكِ تتألقين في كل مناسباتك.
           </p>
           <p>
-            يعمل هذا الزيت على تهدئة البشرة ومنع التهيّج، مع المساعدة على التخلص من مظهر جلد
-            الأوزة ومنح الجلد نعومة واضحة. كما يوفر ترطيباً عميقاً يغذي البشرة ويعيد لها
-            حيويتها.
+            تم تصميم كل قطعة لتبرز جمالك وأنوثتك مع الحفاظ على روح الأصالة. نستخدم أجود أنواع الأقمشة لضمان راحتكِ وأناقتكِ، لتكوني محط الأنظار أينما ذهبتِ.
           </p>
           <p>
-            بفضل قوامه الخفيف وتقنية الامتصاص السريع، يتغلغل بسهولة دون ترك أثر دهني، مما
-            يسمح بفعالية أفضل في إبطاء نمو الشعر وتقليل كثافته مع الاستعمال المنتظم.
+            سواء كنتِ تبحثين عن إطلالة فخمة للأعراس أو طلة أنيقة للمناسبات الخاصة، لدينا الخيار الأمثل لكِ.
           </p>
         </div>
 
@@ -54,39 +48,36 @@ export function Description() {
           style={{ boxShadow: "var(--shadow-soft)" }}
         >
           <Zap className="mx-auto mb-2 h-7 w-7 text-primary" />
-          <p className="text-base font-extrabold text-primary">✨ النتيجة من أول استعمال:</p>
+          <p className="text-base font-extrabold text-primary">✨ تألقي بأبهى حلة:</p>
           <p className="mt-1 text-sm leading-relaxed text-foreground/80">
-            بشرة أنعم، أكثر راحة، ومظهر موحّد يزداد جمالاً مع الوقت.
+            إطلالة ملكية تبرز جمالك وتجعلكِ نجمة الحفل.
           </p>
         </div>
 
         {/* Usage instructions */}
         <div className="mx-auto mt-8 max-w-3xl rounded-2xl border bg-card px-6 py-5">
-          <h3 className="mb-3 text-center text-lg font-extrabold">طريقة الاستعمال</h3>
+          <h3 className="mb-3 text-center text-lg font-extrabold">كيفية الطلب</h3>
           <ul className="space-y-2 text-sm leading-relaxed text-muted-foreground">
             <li className="flex items-start gap-2">
               <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-bold text-primary">1</span>
-              أزِل الشعر من الجذور (بالحلاوة أو الشمع).
+              اختاري الموديل المفضل لديكِ.
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-bold text-primary">2</span>
-              طبّق زيت Rova مباشرة على المنطقة مع تدليك خفيف.
+              أدخلي معلوماتك في استمارة الطلب (الاسم، العنوان، رقم الهاتف).
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-bold text-primary">3</span>
-              كرّر ذلك لمدة <strong>3 أيام متتالية</strong> بعد كل عملية إزالة للشعر.
+               سنتصل بكِ لتأكيد الطلب وشحن المنتج ليصلك إلى باب منزلك، والدفع عند الاستلام!
             </li>
           </ul>
-          <p className="mt-3 rounded-lg bg-primary/5 px-4 py-2 text-center text-xs font-semibold text-primary">
-            تبدأ النتائج في الظهور ابتداءً من ثالث استعمال، وتختلف حسب طبيعة وكثافة الشعر.
-          </p>
         </div>
 
 
 
         {/* Ingredients */}
         <div className="mt-10">
-          <h3 className="mb-5 text-center text-xl font-extrabold">المكونات الرئيسية</h3>
+          <h3 className="mb-5 text-center text-xl font-extrabold">مميزات التشكيلة</h3>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {INGREDIENTS.map(({ icon: Icon, name, desc }) => (
               <div

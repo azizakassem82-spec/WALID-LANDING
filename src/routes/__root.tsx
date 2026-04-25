@@ -31,16 +31,16 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Rova - زيت بديل الليزر - 30مل" },
+      { title: "Bae Chic Collection - أزياء راقية وعصرية" },
       {
         name: "description",
         content:
-          "زيت Rova الطبيعي المخصص كبديل لليزر، يضعف بصيلات الشعر المزعجة. الدفع عند الاستلام في كل ولايات الجزائر.",
+          "أزياء راقية بجودة عالية تلبي كل احتياجاتك. الدفع عند الاستلام في كل ولايات الجزائر والتوصيل الشريع.",
       },
-      { property: "og:title", content: "Rova - زيت بديل الليزر" },
+      { property: "og:title", content: "Bae Chic Collection" },
       {
         property: "og:description",
-        content: "زيت طبيعي يضعف نمو الشعر كبديل لليزر. الدفع عند الاستلام.",
+        content: "أزياء راقية بجودة عالية. الدفع عند الاستلام وتوصيل سريع لكافة الولايات.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

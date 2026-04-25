@@ -168,9 +168,9 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
         <div className="rounded-3xl border bg-card p-8 shadow-2xl" style={{ boxShadow: "var(--shadow-elegant)" }}>
           <div className="mb-6 flex flex-col items-center gap-3">
             <div className="h-14 w-14 overflow-hidden rounded-2xl bg-white shadow-md">
-              <img src="/LOGO .webp" alt="Rova" className="h-full w-full object-cover" />
+              <img src="/LOGO.jpg" alt="Bae Chic Collection" className="h-full w-full object-cover" />
             </div>
-            <h1 className="text-2xl font-extrabold">لوحة تحكم Rova</h1>
+            <h1 className="text-2xl font-extrabold">لوحة تحكم Bae Chic Collection</h1>
             <p className="text-sm text-muted-foreground">ادخل كلمة المرور للوصول</p>
           </div>
           {error && (
@@ -887,10 +887,56 @@ function OrdersTab() {
   );
 }
 
+// ---------- Leads Tab ----------
+function LeadsTab() {
+  const convexLeads = useQuery(api.orders.listLeads) || [];
+
+  return (
+    <div className="space-y-6">
+      <div className="rounded-2xl border bg-card shadow-sm">
+        <div className="border-b p-5">
+          <h2 className="font-extrabold text-lg flex items-center gap-2">
+            <Phone className="h-5 w-5 text-orange-500" />
+            العملاء المحتملين (أرقام الهواتف غير المكتملة)
+          </h2>
+          <p className="text-xs text-muted-foreground mt-1">هذه الأرقام للأشخاص الذين كتبوا هواتفهم ولم يكملوا الطلب.</p>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b bg-muted/30 text-right text-xs font-bold text-muted-foreground">
+                <th className="px-5 py-3">العميل</th>
+                <th className="px-5 py-3">الهاتف</th>
+                <th className="px-5 py-3">التاريخ</th>
+              </tr>
+            </thead>
+            <tbody>
+              {convexLeads.length === 0 && (
+                <tr><td colSpan={3} className="py-12 text-center text-muted-foreground">لا توجد أرقام غير مكتملة بعد</td></tr>
+              )}
+              {convexLeads.map((lead, idx) => (
+                <tr key={lead._id} className={`border-b transition-colors hover:bg-muted/20 ${idx % 2 === 0 ? "" : "bg-muted/10"}`}>
+                  <td className="px-5 py-3.5 font-semibold">{lead.name || "—"}</td>
+                  <td className="px-5 py-3.5">
+                    <a href={`tel:${lead.phone}`} className="flex items-center gap-1.5 font-bold text-orange-600 hover:text-orange-700 transition-colors">
+                      <Phone className="h-3.5 w-3.5 shrink-0" />{lead.phone}
+                    </a>
+                  </td>
+                  <td className="px-5 py-3.5 text-muted-foreground">{new Date(lead.createdAt).toLocaleString("en-GB")}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ---------- Main Dashboard ----------
 function Dashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [activeTab, setActiveTab] = useState<"orders" | "settings">("orders");
+  const [activeTab, setActiveTab] = useState<"orders" | "settings" | "leads">("orders");
 
   if (!isAuthenticated) {
     return <LoginScreen onLogin={() => setIsAuthenticated(true)} />;
@@ -904,10 +950,10 @@ function Dashboard() {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2.5">
               <div className="h-9 w-9 overflow-hidden rounded-xl bg-white shadow">
-                <img src="/LOGO .webp" alt="Rova" className="h-full w-full object-cover" />
+                <img src="/LOGO.jpg" alt="Bae Chic Collection" className="h-full w-full object-cover" />
               </div>
               <div>
-                <p className="text-sm font-extrabold leading-tight">Rova</p>
+                <p className="text-sm font-extrabold leading-tight">Bae Chic Collection</p>
                 <p className="text-[10px] text-muted-foreground">لوحة التحكم</p>
               </div>
             </div>
@@ -918,6 +964,12 @@ function Dashboard() {
                 className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${activeTab === "orders" ? "bg-background shadow text-primary" : "text-muted-foreground hover:text-foreground"}`}
               >
                 <ShoppingBag className="h-3.5 w-3.5" />الطلبات
+              </button>
+              <button
+                onClick={() => setActiveTab("leads")}
+                className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${activeTab === "leads" ? "bg-background shadow text-orange-600" : "text-muted-foreground hover:text-foreground"}`}
+              >
+                <Phone className="h-3.5 w-3.5" />غير مكتملة
               </button>
               <button
                 onClick={() => setActiveTab("settings")}
@@ -943,6 +995,12 @@ function Dashboard() {
             <ShoppingBag className="h-4 w-4" />الطلبات
           </button>
           <button
+            onClick={() => setActiveTab("leads")}
+            className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold transition-colors ${activeTab === "leads" ? "text-orange-600 border-b-2 border-orange-500" : "text-muted-foreground"}`}
+          >
+            <Phone className="h-4 w-4" />غير مكتملة
+          </button>
+          <button
             onClick={() => setActiveTab("settings")}
             className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold transition-colors ${activeTab === "settings" ? "text-primary border-b-2 border-primary" : "text-muted-foreground"}`}
           >
@@ -952,7 +1010,9 @@ function Dashboard() {
       </header>
 
       <main className="mx-auto max-w-7xl px-4 py-8">
-        {activeTab === "orders" ? <OrdersTab /> : <SettingsTab />}
+        {activeTab === "orders" && <OrdersTab />}
+        {activeTab === "leads" && <LeadsTab />}
+        {activeTab === "settings" && <SettingsTab />}
       </main>
     </div>
   );

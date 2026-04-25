@@ -14,8 +14,8 @@ export function BeforeAfter() {
     <section id="results" className="py-12 bg-background">
       <div className="mx-auto max-w-5xl px-4">
         <div className="mb-8 text-center">
-          <h2 className="text-2xl font-extrabold sm:text-3xl">نتائج زبائننا المبهرة</h2>
-          <p className="text-sm text-muted-foreground mt-2">صور حقيقية قبل وبعد استخدام زيت Rova</p>
+          <h2 className="text-2xl font-extrabold sm:text-3xl">أحدث التصاميم</h2>
+          <p className="text-sm text-muted-foreground mt-2">تشكيلة مميزة من الأزياء الراقية</p>
         </div>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
           {IMAGES.map((src, i) => (
@@ -23,7 +23,7 @@ export function BeforeAfter() {
               <DialogTrigger asChild>
                 <img
                   src={src}
-                  alt={`Rova result ${i + 1}`}
+                  alt={`Bae Chic Collection result ${i + 1}`}
                   loading="lazy"
                   className="aspect-square w-full rounded-2xl border bg-card object-cover transition-transform hover:scale-[1.02] cursor-pointer shadow-sm"
                 />
@@ -31,7 +31,7 @@ export function BeforeAfter() {
               <DialogContent className="max-w-3xl p-1 bg-transparent border-none shadow-none text-white [&>button]:text-white">
                 <img
                   src={src}
-                  alt={`Rova result ${i + 1} expanded`}
+                  alt={`Bae Chic Collection result ${i + 1} expanded`}
                   className="h-auto w-full rounded-xl object-contain"
                 />
               </DialogContent>

@@ -252,7 +252,7 @@ export function OrderForm() {
     fbEvent("Purchase", { 
       value: unit * qty, 
       currency: "DZD", 
-      content_name: "Rova Oil",
+      content_name: "Bae Chic Collection",
       event_id: purchaseEventId 
     });
     ttEvent("CompletePayment", { value: unit * qty, currency: "DZD" });
@@ -310,9 +310,9 @@ export function OrderForm() {
           </div>
 
           <h2 className="mb-1 text-center text-2xl font-extrabold sm:text-3xl">
-            Rova - زيت بديل الليزر
+            Bae Chic Collection - أزياء راقية
           </h2>
-          <p className="mb-5 text-center text-sm text-muted-foreground">30مل</p>
+          <p className="mb-5 text-center text-sm text-muted-foreground">القطعة الواحدة</p>
 
           <div className="mb-6 flex items-center justify-center gap-3 rounded-2xl bg-primary/5 py-4 flex-wrap">
             <span
@@ -341,6 +341,22 @@ export function OrderForm() {
               <p className="text-sm text-muted-foreground">
                 سيتواصل معك فريقنا خلال 24 ساعة لتأكيد الطلب.
               </p>
+              <button
+                onClick={() => {
+                  setSubmitted(false);
+                  setQty(1);
+                  setSelectedWilaya("");
+                  setFieldErrors({});
+                  setCheckoutFired(false);
+                  if (formRef.current) formRef.current.reset();
+                  formFocusedAt.current = null;
+                  notEndedSentRef.current = false;
+                }}
+                className="mt-4 w-full sm:w-auto rounded-xl px-6 py-2.5 text-sm font-bold text-white transition-transform hover:scale-[1.02] shadow-md"
+                style={{ background: "var(--gradient-cta)" }}
+              >
+                العودة لتقديم طلب آخر
+              </button>
             </div>
           ) : (
             <form
@@ -351,14 +367,14 @@ export function OrderForm() {
                 // Record first interaction time for time-gate
                 if (!formFocusedAt.current) formFocusedAt.current = Date.now();
                 // Pixel event
-                if (!checkoutFired) {
-                  setCheckoutFired(true);
-                  const checkoutEventId = `ic_${Date.now()}`;
-                  fbEvent("InitiateCheckout", { 
-                    content_name: "Rova Oil",
-                    event_id: checkoutEventId
-                  });
-                  ttEvent("InitiateCheckout", { content_name: "Rova Oil" });
+                  if (!checkoutFired) {
+                    setCheckoutFired(true);
+                    const checkoutEventId = `ic_${Date.now()}`;
+                    fbEvent("InitiateCheckout", { 
+                      content_name: "Bae Chic Collection",
+                      event_id: checkoutEventId
+                    });
+                    ttEvent("InitiateCheckout", { content_name: "Bae Chic Collection" });
                   
                   // Backend CAPI for InitiateCheckout
                   sendMetaEvent({
@@ -549,22 +565,7 @@ export function OrderForm() {
           )}
         </div>
 
-        {/* Warning image below form */}
-        <div className="mx-auto mt-5 max-w-2xl px-4">
-          <Dialog>
-            <DialogTrigger asChild>
-              <img
-                src="/WARNING.webp"
-                alt="تحذير هام"
-                loading="lazy"
-                className="w-full cursor-pointer rounded-2xl border shadow-sm transition-transform hover:scale-[1.01] object-contain"
-              />
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl p-1 bg-transparent border-none shadow-none [&>button]:text-white">
-              <img src="/WARNING.webp" alt="تحذير" className="w-full rounded-xl" />
-            </DialogContent>
-          </Dialog>
-        </div>
+        {/* Form End */}
       </div>
     </section>
   );
