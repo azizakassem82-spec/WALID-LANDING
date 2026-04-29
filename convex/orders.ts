@@ -10,6 +10,7 @@ export const createOrder = mutation({
     phone: v.string(),
     wilaya: v.string(),
     address: v.optional(v.string()),
+    productName: v.optional(v.string()),
     qty: v.number(),
     total: v.number(),
   },
@@ -29,8 +30,9 @@ export const createNotEndedLead = mutation({
   args: {
     name: v.optional(v.string()),
     phone: v.string(),
+    productName: v.optional(v.string()),
   },
-  handler: async (ctx, { name, phone }) => {
+  handler: async (ctx, { name, phone, productName }) => {
     // Don't duplicate leads for the same phone
     const existing = await ctx.db
       .query("orders")
@@ -42,6 +44,7 @@ export const createNotEndedLead = mutation({
       name: name || "—",
       phone,
       wilaya: "—",
+      productName,
       qty: 0,
       total: 0,
       status: "lead",

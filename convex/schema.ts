@@ -7,6 +7,7 @@ export default defineSchema({
     phone: v.string(),
     wilaya: v.string(),
     address: v.optional(v.string()),
+    productName: v.optional(v.string()), // product name for the order
     qty: v.number(),
     total: v.number(),
     status: v.string(),         // "new" | "confirmed" | "shipped" | "delivered" | "cancelled"
