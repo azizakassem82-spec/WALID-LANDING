@@ -108,19 +108,21 @@ export function PixelManager() {
   const hasLoadedFb = useRef(false);
   const hasLoadedTt = useRef(false);
 
+  const PRIMARY_PIXEL_ID = "1612297379997971";
+
   // ---- Facebook Pixels ----
   useEffect(() => {
-    if (isLoading || fbIds.length === 0 || typeof window === "undefined") return;
+    if (typeof window === "undefined" || !window.fbq) return;
     if (hasLoadedFb.current) return;
 
-    // Re-initialize all pixels and fire PageView
-    fbIds.forEach((id) => {
+    // Init any EXTRA pixel IDs from Convex (primary is already inited in index.html)
+    const extraIds = fbIds.filter((id) => id !== PRIMARY_PIXEL_ID);
+    extraIds.forEach((id) => {
       window.fbq!("init", id);
     });
-    window.fbq!("track", "PageView");
 
-    // Add noscript fallback to head if not already present
-    fbIds.forEach((id) => {
+    // Add noscript fallback for extra pixels
+    extraIds.forEach((id) => {
       const noscriptId = `fb-noscript-${id}`;
       if (!document.getElementById(noscriptId)) {
         const noscript = document.createElement("noscript");
@@ -131,7 +133,7 @@ export function PixelManager() {
     });
 
     hasLoadedFb.current = true;
-  }, [fbIdsKey, isLoading]);
+  }, [fbIdsKey]);
 
   // ---- TikTok Pixels ----
   useEffect(() => {

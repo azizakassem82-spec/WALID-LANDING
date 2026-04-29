@@ -8,11 +8,7 @@ import "./styles.css";
 
 const router = createRouter({ routeTree });
 
-// Inject Convex URL: Force uncommon-yak-920 to ensure it uses the user's main backend
-const convexUrl = import.meta.env.DEV 
-  ? (import.meta.env.VITE_CONVEX_URL || "https://uncommon-yak-920.eu-west-1.convex.cloud")
-  : "https://uncommon-yak-920.eu-west-1.convex.cloud";
-const convex = new ConvexReactClient(convexUrl);
+const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
 
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
