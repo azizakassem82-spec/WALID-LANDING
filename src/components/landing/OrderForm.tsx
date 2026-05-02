@@ -207,10 +207,11 @@ export function OrderForm() {
     const name    = (form.get("name")    as string).trim();
     const phone   = (form.get("phone")   as string).replace(/\s/g, "");
     const wilaya  =  form.get("wilaya")  as string;
+    const commune = (form.get("commune") as string).trim();
     const address = (form.get("address") as string).trim();
 
     // ② Required fields
-    if (!name || !phone || !wilaya) {
+    if (!name || !phone || !wilaya || !commune) {
       toast.error("الرجاء تعبئة جميع الحقول المطلوبة");
       return;
     }
@@ -252,7 +253,7 @@ export function OrderForm() {
     fbEvent("Purchase", { 
       value: unit * qty, 
       currency: "DZD", 
-      content_name: "Bae Chic Collection",
+      content_name: "Robe Chic",
       event_id: purchaseEventId 
     });
     ttEvent("CompletePayment", { value: unit * qty, currency: "DZD" });
@@ -270,21 +271,36 @@ export function OrderForm() {
       }
     }).catch(console.error);
 
+    const productsPrice = unit * qty;
+    const deliveryPlace = deliveryType === "desk" ? "مكتب (Stopdesk)" : "منزل (Domicile)";
+
     // ── Fire network sends IN THE BACKGROUND — customer never waits ───────────
-    const formattedAddress = address ? `${address} (${deliveryType === "desk" ? "توصيل للمكتب" : "توصيل للمنزل"})` : (deliveryType === "desk" ? "توصيل للمكتب" : "توصيل للمنزل");
     const sheetData = {
-      name, phone, wilaya,
-      address: formattedAddress,
-      qty:   String(qty),
-      total: `${totalAmount.toLocaleString()} دج`,
+      orderId:        "",   // auto-filled by Apps Script
+      qty:            String(qty),
+      productName:    "Robe Chic",
+      productVariant: "",
+      name,
+      phone,
+      wilaya,
+      commune,
+      deliveryPlace,
+      deliveryCost:   String(deliveryCost),
+      productsPrice:  String(productsPrice),
+      total:          String(totalAmount),
     };
 
     sendToSheet(settings.googleSheetUrl, sheetData).catch(console.error);
 
     convexCreateOrder({
       name, phone, wilaya,
-      address: formattedAddress,
+      commune,
+      address,
+      productName: "Robe Chic",
       qty,
+      productsPrice,
+      deliveryPlace,
+      deliveryCost,
       total: totalAmount,
     }).catch(console.error);
   };
@@ -310,7 +326,7 @@ export function OrderForm() {
           </div>
 
           <h2 className="mb-1 text-center text-2xl font-extrabold sm:text-3xl">
-            Bae Chic Collection - أزياء راقية
+            Robe Chic - روب شيك
           </h2>
           <p className="mb-5 text-center text-sm text-muted-foreground">القطعة الواحدة</p>
 
@@ -371,10 +387,10 @@ export function OrderForm() {
                     setCheckoutFired(true);
                     const checkoutEventId = `ic_${Date.now()}`;
                     fbEvent("InitiateCheckout", { 
-                      content_name: "Bae Chic Collection",
+                      content_name: "Robe Chic",
                       event_id: checkoutEventId
                     });
-                    ttEvent("InitiateCheckout", { content_name: "Bae Chic Collection" });
+                    ttEvent("InitiateCheckout", { content_name: "Robe Chic" });
                   
                   // Backend CAPI for InitiateCheckout
                   sendMetaEvent({
@@ -494,10 +510,16 @@ export function OrderForm() {
                 )}
               </div>
 
+              {/* Commune */}
+              <div className="space-y-1.5">
+                <Label htmlFor="commune">البلدية <span className="text-destructive">*</span></Label>
+                <Input id="commune" name="commune" placeholder="اسم البلدية" required />
+              </div>
+
               {/* Address */}
               <div className="space-y-1.5">
-                <Label htmlFor="address">البلدية / العنوان</Label>
-                <Input id="address" name="address" placeholder="البلدية والعنوان الكامل" />
+                <Label htmlFor="address">العنوان التفصيلي</Label>
+                <Input id="address" name="address" placeholder="الشارع / الحي / رقم المنزل (اختياري)" />
               </div>
 
               {/* Qty */}

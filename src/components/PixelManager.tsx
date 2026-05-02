@@ -108,7 +108,7 @@ export function PixelManager() {
   const hasLoadedFb = useRef(false);
   const hasLoadedTt = useRef(false);
 
-  const PRIMARY_PIXEL_ID = "1612297379997971";
+  const PRIMARY_PIXEL_ID = "771471819260281";
 
   // ---- Facebook Pixels ----
   useEffect(() => {

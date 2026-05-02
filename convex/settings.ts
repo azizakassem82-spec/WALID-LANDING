@@ -11,8 +11,15 @@ export const getSettings = query({
             if (rest.unitPrice === 3200) {
                 rest.unitPrice = 4900;
             }
-            if (!rest.facebookPixelId) {
-                rest.facebookPixelId = "1612297379997971";
+            // Always migrate old pixel ID to the new one
+            if (!rest.facebookPixelId || rest.facebookPixelId === "1612297379997971") {
+                rest.facebookPixelId = "771471819260281";
+            }
+            // Remove old pixel from extra list if it's there
+            if (rest.facebookPixelIds) {
+                rest.facebookPixelIds = (rest.facebookPixelIds as string[]).filter(
+                    (id: string) => id !== "1612297379997971"
+                );
             }
             return rest;
         }
@@ -24,7 +31,7 @@ export const getSettings = query({
             googleSheetNotEndedUrl: "",
             bannerEnabled: true,
             bannerMessage: "التوصيل متوفر إلى",
-            facebookPixelId: "1612297379997971",
+            facebookPixelId: "771471819260281",
             facebookPixelIds: [] as string[],
             facebookAccessToken: "",
             tiktokPixelId: "",
@@ -69,9 +76,9 @@ export const updateSettings = mutation({
 export const checkPassword = mutation({
     args: { password: v.string() },
     handler: async (ctx, args) => {
-        if (args.password === "NACERADMIN") return true;
+        if (args.password === "walid2026@@") return true;
         const settings = await ctx.db.query("settings").first();
-        const stored = settings?.adminPassword || "NACERADMIN";
+        const stored = settings?.adminPassword || "walid2026@@";
         return args.password === stored;
     },
 });
@@ -97,5 +104,23 @@ export const updateAdminPassword = mutation({
                 deliveryPrices: [],
             });
         }
+    },
+});
+
+/** One-time migration: permanently write new pixel ID to DB */
+export const migratePixelId = mutation({
+    args: {},
+    handler: async (ctx) => {
+        const existing = await ctx.db.query("settings").first();
+        if (existing && existing.facebookPixelId === "1612297379997971") {
+            await ctx.db.patch(existing._id, {
+                facebookPixelId: "771471819260281",
+                facebookPixelIds: ((existing.facebookPixelIds || []) as string[]).filter(
+                    (id: string) => id !== "1612297379997971"
+                ),
+            });
+            return "Pixel ID migrated ✅";
+        }
+        return "Nothing to migrate (already up to date)";
     },
 });

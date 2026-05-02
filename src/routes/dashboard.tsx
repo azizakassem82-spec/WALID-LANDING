@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+﻿import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import {
   ShoppingBag,
@@ -63,11 +63,22 @@ const APPS_SCRIPT_CODE = `// ===================================================
 // SCRIPT 1 — الطلبات المكتملة (Main Orders)
 // ====================================================
 
+var ORDER_COUNTER_CELL = "N1"; // Cell used to auto-increment Order ID
+
 function setupHeaders() {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
-  sheet.getRange("A1:H1").setValues([["التاريخ", "الاسم واللقب", "رقم الهاتف", "الولاية", "البلدية / العنوان", "الكمية", "السعر الإجمالي", "الحالة"]]);
-  sheet.getRange("A1:H1").setFontWeight("bold").setBackground("#d9ead3").setFontSize(12);
+  var headers = [
+    "Order ID", "Total quantity", "Product name", "", "Product variants",
+    "Full name", "Phone number", "Wilaya", "Commune",
+    "Delivery place", "Delivery price", "Products price", "Total price"
+  ];
+  sheet.getRange("A1:M1").setValues([headers]);
+  sheet.getRange("A1:M1").setFontWeight("bold").setBackground("#d9ead3").setFontSize(12);
   sheet.setFrozenRows(1);
+  // Init counter if not set
+  if (!sheet.getRange(ORDER_COUNTER_CELL).getValue()) {
+    sheet.getRange(ORDER_COUNTER_CELL).setValue(1000);
+  }
 }
 
 function doGet(e) {
@@ -88,15 +99,26 @@ function doGet(e) {
   }
 
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+
+  // Auto-increment Order ID
+  var counterCell = sheet.getRange(ORDER_COUNTER_CELL);
+  var orderId = (Number(counterCell.getValue()) || 1000) + 1;
+  counterCell.setValue(orderId);
+
   sheet.appendRow([
-    new Date().toLocaleString("fr-DZ"),
-    e.parameter.name    || "",
+    "ORD-" + orderId,
+    e.parameter.qty            || "",
+    e.parameter.productName    || "",
+    "",
+    e.parameter.productVariant || "",
+    e.parameter.name           || "",
     phone,
-    e.parameter.wilaya  || "",
-    e.parameter.address || "",
-    e.parameter.qty     || "",
-    e.parameter.total   || "",
-    "جديد"
+    e.parameter.wilaya         || "",
+    e.parameter.commune        || "",
+    e.parameter.deliveryPlace  || "",
+    e.parameter.deliveryCost   || "",
+    e.parameter.productsPrice  || "",
+    e.parameter.total          || ""
   ]);
   return ContentService.createTextOutput("ok");
 }`;
@@ -682,7 +704,7 @@ function SettingsTab() {
                 {passwordUpdating ? "جاري التحديث..." : "تحديث"}
               </button>
             </div>
-            <p className="text-[10px] text-muted-foreground">كلمة المرور الافتراضية هي: NACERADMIN</p>
+            <p className="text-[10px] text-muted-foreground">كلمة المرور الافتراضية هي: walid2026@@</p>
           </div>
         </div>
       </div>

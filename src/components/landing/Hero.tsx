@@ -16,7 +16,56 @@ export function Hero() {
       style={{ background: "var(--gradient-hero)" }}
     >
       <div className="relative mx-auto w-full max-w-5xl px-4 flex flex-col items-center justify-center gap-8 text-center">
-        
+        {/* ── Product Name ── */}
+        <div className="flex flex-col items-center gap-1 select-none">
+          {/* Product name – French */}
+          <h1
+            className="leading-none tracking-widest uppercase"
+            style={{
+              fontFamily: "var(--font-brand-fr)",
+              fontSize: "clamp(2.8rem, 9vw, 6rem)",
+              fontWeight: 900,
+              background: "linear-gradient(135deg, oklch(0.30 0.10 145) 0%, oklch(0.55 0.20 145) 50%, oklch(0.40 0.14 145) 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              letterSpacing: "0.12em",
+            }}
+          >
+            Robe Chic
+          </h1>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 w-full max-w-xs my-0.5">
+            <div className="flex-1 h-px" style={{ background: "linear-gradient(to right, transparent, oklch(0.65 0.16 145))" }} />
+            <span style={{ color: "oklch(0.65 0.16 145)", fontSize: "1rem" }}>✦</span>
+            <div className="flex-1 h-px" style={{ background: "linear-gradient(to left, transparent, oklch(0.65 0.16 145))" }} />
+          </div>
+
+          {/* Product name – Arabic */}
+          <p
+            className="leading-none"
+            dir="rtl"
+            style={{
+              fontFamily: "var(--font-brand-ar)",
+              fontSize: "clamp(2rem, 6vw, 4rem)",
+              fontWeight: 700,
+              background: "linear-gradient(135deg, oklch(0.55 0.20 145) 0%, oklch(0.30 0.10 145) 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              letterSpacing: "0.04em",
+            }}
+          >
+            روب شيك
+          </p>
+
+          {/* Website brand subtitle */}
+          <p className="text-xs font-semibold text-muted-foreground mt-1 tracking-wide uppercase">
+            by Bae Chic Collection
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
           <div className="relative w-full overflow-hidden rounded-[2rem] border border-white/40 bg-white/30 p-2 backdrop-blur shadow-xl transition-transform hover:scale-[1.01]">
             <Dialog>

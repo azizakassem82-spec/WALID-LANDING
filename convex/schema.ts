@@ -6,10 +6,15 @@ export default defineSchema({
     name: v.string(),
     phone: v.string(),
     wilaya: v.string(),
+    commune: v.optional(v.string()),         // البلدية
     address: v.optional(v.string()),
-    productName: v.optional(v.string()), // product name for the order
+    productName: v.optional(v.string()),     // Product name
+    productVariant: v.optional(v.string()),  // Product variant (size/color)
     qty: v.number(),
-    total: v.number(),
+    productsPrice: v.optional(v.number()),   // Products price (excl. delivery)
+    deliveryPlace: v.optional(v.string()),   // "منزل" | "مكتب"
+    deliveryCost: v.optional(v.number()),    // Delivery cost
+    total: v.number(),                       // Grand total
     status: v.string(),         // "new" | "confirmed" | "shipped" | "delivered" | "cancelled"
     isNotEnded: v.boolean(),    // true = lead who didn't finish; false = completed order
     isSuspect: v.boolean(),     // flagged by anti-bot logic
